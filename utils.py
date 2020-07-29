@@ -1,15 +1,11 @@
 import tensorflow as tf
 # import imageio
 # import glob
-import numpy as np
 import matplotlib.pyplot as plt
 import os
 
 def create_dataset(train_images, buffer_size, batch_size=256):
     return tf.data.Dataset.from_tensor_slices(train_images).shuffle(buffer_size).batch(batch_size)
-
-def entropy():
-    return tf.keras.losses.BinaryCrossentropy(from_logits=True)
 
 def normalise(train_images):
     # reshaping to the desired input shape
@@ -35,6 +31,6 @@ def generate_and_save_images(model, epoch, test_input):
 def create_ckpt_dir(generator, discriminator):
     ckpt_dir = './training_checkpoints'
     ckpt_prefix = os.path.join(ckpt_dir, "ckpt")
-    checkpoint = tf.train.Checkpoint(generator_optimizer=generator.optimizer(), discriminator_optimizer=discriminator.optimizer(), 
-                                 generator=generator.model(), discriminator=discriminator.model())
+    checkpoint = tf.train.Checkpoint(generator_optimizer=generator.optimizer, discriminator_optimizer=discriminator.optimizer, 
+                                 generator=generator.model, discriminator=discriminator.model)
     return checkpoint, ckpt_dir, ckpt_prefix

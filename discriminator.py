@@ -1,25 +1,32 @@
 import tensorflow as tf
 import tensorflow.keras.layers as layers
-from utils import entropy
+# from utils import entropy
 
 # Discriminator
 class Discriminator:
-    def model(self):
-        model = tf.keras.Sequential()
-        model.add(layers.Conv2D(64, (5,5), strides=(2,2), padding='same', input_shape=[28,28,1]))
-        model.add(layers.LeakyReLU())
-        model.add(layers.Dropout(0.3))
+    def __init__(self):
+        self.model = tf.keras.Sequential()
+        self.optimizer = self.optimizer()
+        # self.loss = None
+        self.create_model()
 
-        model.add(layers.Conv2D(128, (5,5), strides=(2,2), padding='same'))
-        model.add(layers.LeakyReLU())
-        model.add(layers.Dropout(0.3))
+    def create_model(self):
+        self.model = tf.keras.Sequential()
+        self.model.add(layers.Conv2D(64, (5,5), strides=(2,2), padding='same', input_shape=[28,28,1]))
+        self.model.add(layers.LeakyReLU())
+        self.model.add(layers.Dropout(0.3))
 
-        model.add(layers.Flatten())
-        model.add(layers.Dense(1))
+        self.model.add(layers.Conv2D(128, (5,5), strides=(2,2), padding='same'))
+        self.model.add(layers.LeakyReLU())
+        self.model.add(layers.Dropout(0.3))
 
-        return model
+        self.model.add(layers.Flatten())
+        self.model.add(layers.Dense(1))
+
+        return self.model
 
     def loss(self, real, fake):
+        entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
         real_loss = entropy(tf.ones_like(real), real)
         fake_loss = entropy(tf.zeros_like(fake), fake)
         loss = real_loss + fake_loss
